@@ -34,6 +34,7 @@ class Scenario:
     """Definition of how to run a Checkbox session."""
     config_override = {}
     environment = {}
+    cmd_args = ""
     launcher = None
     LAUNCHER_PATH = '/home/ubuntu/launcher.checkbox'
 
@@ -158,7 +159,7 @@ class Scenario:
             if self.launcher:
                 cmd = self.LAUNCHER_PATH
             outcome = self.local_machine.start(
-                cmd=cmd, env=self.environment,
+                cmd="{} {}".format(self.cmd_args, cmd), env=self.environment,
                 interactive=interactive, timeout=timeout)
             if interactive:
                 self._pts = outcome
@@ -176,7 +177,7 @@ class Scenario:
 
     def start_remote(self, interactive=False, timeout=0):
         outcome = self.remote_machine.start_remote(
-            self.service_machine.address, self.LAUNCHER_PATH, interactive,
+            self.service_machine.address, self.LAUNCHER_PATH, cmd_args=self.cmd_args, interactive=interactive,
             timeout=timeout)
         if interactive:
             self._pts = outcome
